@@ -1,18 +1,30 @@
 import sqlite3
 
-# connection created
-conn = sqlite3.connect('lite.db')
+def create():
+    conn = sqlite3.connect('lite.db')
+    cur = conn.cursor()
+    cur.execute("CREATE TABLE if not exists store(item TEXT,quantity INTEGER, price REAL)")
+    conn.commit()
+    conn.close()
 
-# cursor created
-cur = conn.cursor()
-cur.execute("CREATE TABLE IF NOT EXISTS store(item TEXT,quantity INTEGER, price REAL)")
 
-# inserting the data
-cur.execute("INSERT INTO store VALUES('books', 100, 110.5)")
-# cur.execute("DELETE FROM store where item = 'books'")
+def insert(item, quantity, price):
+    conn = sqlite3.connect('lite.db')
+    cur = conn.cursor()
+    cur.execute("INSERT INTO store VALUES(?,?,?)", (item, quantity, price))
+    conn.commit()
+    conn.close()
 
-# changes made here will be submitted to the database by 
-conn.commit()
+insert('Pens', 10, 20)
 
-# close the connection
-conn.close()
+def view():
+    conn = sqlite3.connect('lite.db')
+    cur = conn.cursor()
+    cur.execute('SELECT * FROM store')
+    rows = cur.fetchall()
+    conn.close()
+    return rows
+
+data = view()
+for d in data:
+    print(d)
